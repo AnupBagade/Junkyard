@@ -1,0 +1,1 @@
+export const LOAD_MENUITEMS = 'LOAD_MENUITEMS'

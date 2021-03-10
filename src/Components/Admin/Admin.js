@@ -1,10 +1,8 @@
-import { Formik } from 'formik';
 import {Row} from 'react-bootstrap';
 import {useState, useEffect} from 'react';
-import firebaseDB, {firebaseStorage} from '../../Utils/FirebaseConfiguration/FirebaseConfiguraiton';
+import firebaseDB from '../../Utils/FirebaseConfiguration/FirebaseConfiguraiton';
 import lodash from 'lodash';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import * as Yup from 'yup';
 import AddMenu from './MenuManagement/AddMenu/AddMenu';
 import UpdateDeleteMenu from './MenuManagement/UpdateDeleteMenu/UpdateDeleteMenu';
 import CustomLoader from '../CustomLoader/CustomLoader';
@@ -21,7 +19,7 @@ const Admin = () =>{
   const [loading, setLoading] = useState(false);
   const updateDeleteColumns = ['Menu', 'Variants', 'Update', 'Delete'];
   const firebaseColumns = ['menuName', 'variants', 'menuNameKey'];
-  const menuNameKey = 'menuNameKey'
+  // const menuNameKey = 'menuNameKey'
 
   const updateMenuItemHandler = (menuNameKey, menuName, event) => {
     console.log('inside updateMenuItemHandler')
@@ -64,6 +62,10 @@ const Admin = () =>{
     setLoading(prevState => false)
   }
 
+  const loadMenuTable = () => {
+    setLoadData(prevState => !prevState);
+  }
+
   useEffect(()=>{
     console.log('inside useeffect')
     getMenuFirebaseDetails();
@@ -71,7 +73,7 @@ const Admin = () =>{
 
   return(
     <div>
-      <AddMenu initialData={initialMenuValues} loadMenuTable={setLoadData}/>
+      <AddMenu initialData={initialMenuValues} loadMenuTable={loadMenuTable}/>
       <Row style={{display: 'flex', justifyContent: 'center'}}>
         {loading && (<CustomLoader />)}
       </Row>

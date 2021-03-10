@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Formik} from 'formik';
 import firebaseDB, {firebaseStorage} from '../../../../Utils/FirebaseConfiguration/FirebaseConfiguraiton';
-import {Form, Row, Col, Container, Button, Card, Modal } from 'react-bootstrap';
+import {Form, Row, Col, Container, Button, Card} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Yup from 'yup';
 import useCustomConfirm from '../../../CustomConfirm/CustomConfirm';
@@ -9,8 +9,8 @@ import CustomLoader from '../../../CustomLoader/CustomLoader';
 
 
 const validateMenuName = async (uniqueKeyColumn, menuName='',requestType='Menu') => {
-  let menuItems = await firebaseDB.ref('Menu').orderByChild('menuNameKey').
-  equalTo(menuName.trim().replace(/\s/g, '').toUpperCase()).once('value')
+  let menuItems = await firebaseDB.ref('Menu').orderByChild('menuNameKey')
+  .equalTo(menuName.trim().replace(/\s/g, '').toUpperCase()).once('value')
   return menuItems.val()
 }
 
