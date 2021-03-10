@@ -1,8 +1,7 @@
-import { shallow , mount} from 'enzyme';
+import { shallow } from 'enzyme';
 import React from 'react';
 import {HomePageContent} from '../../../Components/HomePage/HomePageContent/HomePageContent';
-import {mockStore, findByTestAttr} from '../../../Utils/Testing/TestingUtilities';
-import { middlewares } from '../../../Redux/store';
+import {findByTestAttr} from '../../../Utils/Testing/TestingUtilities';
 
 
 describe('HomePageContent with props', () => {
