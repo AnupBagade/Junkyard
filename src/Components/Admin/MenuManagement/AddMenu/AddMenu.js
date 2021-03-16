@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
 import {Formik} from 'formik';
+import PropTypes from 'prop-types';
 import firebaseDB, {firebaseStorage} from '../../../../Utils/FirebaseConfiguration/FirebaseConfiguraiton';
-import {Form, Row, Col, Container, Button, Card, Modal } from 'react-bootstrap';
+import {Form, Row, Col, Container, Button, Card} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Yup from 'yup';
 import useCustomConfirm from '../../../CustomConfirm/CustomConfirm';
@@ -9,8 +10,8 @@ import CustomLoader from '../../../CustomLoader/CustomLoader';
 
 
 const validateMenuName = async (uniqueKeyColumn, menuName='',requestType='Menu') => {
-  let menuItems = await firebaseDB.ref('Menu').orderByChild('menuNameKey').
-  equalTo(menuName.trim().replace(/\s/g, '').toUpperCase()).once('value')
+  let menuItems = await firebaseDB.ref('Menu').orderByChild('menuNameKey')
+  .equalTo(menuName.trim().replace(/\s/g, '').toUpperCase()).once('value')
   return menuItems.val()
 }
 
@@ -47,7 +48,7 @@ const AddMenu = (menuProps) =>{
   return(
     <Container style={{paddingTop:"10%", paddingBottom:"10%"}}>
       <Card>
-        <Card.Header as="h5" style={{backgroundColor:"#212529", color:"white"}}>Add Menu</Card.Header>
+        <Card.Header as="h5" style={{backgroundColor:"#212529", color:"white"}} data-test="add-menu-form-header">Add Menu</Card.Header>
         <Card.Body>
           <Formik
             enableReinitialize
@@ -111,11 +112,12 @@ const AddMenu = (menuProps) =>{
             })}}
           >
             {(props) =>(
-                <Form id="menuForm" onSubmit={props.handleSubmit}>
-                  <Form.Group as={Row}>
+                <Form id="menuForm" onSubmit={props.handleSubmit} data-test="add-menu-form">
+                  <Form.Group as={Row} data-test="add-menu-requestType-field">
                     <Form.Label column sm="2">Request Type</Form.Label>
                     <Col sm="7">
                       <Form.Control
+                        data-test="request-type"
                         id="requestType"
                         name="requestType"
                         type="text"
@@ -125,7 +127,7 @@ const AddMenu = (menuProps) =>{
                       {props.errors.requestType && props.touched.requestType ? (<div>{props.errors.requestType}</div>) : null}
                     </Col>
                   </Form.Group>
-                  <Form.Group as={Row}>
+                  <Form.Group as={Row} data-test="add-menu-menuName-field">
                     <Form.Label column sm="2">Menu Name</Form.Label>
                     <Col sm="7">
                       <Form.Control
@@ -138,7 +140,7 @@ const AddMenu = (menuProps) =>{
                       {props.errors.menuName && props.touched.menuName ? (<div>{props.errors.menuName}</div>) : null}
                     </Col>
                   </Form.Group>
-                  <Form.Group as={Row}>
+                  <Form.Group as={Row} data-test="add-menu-menuImage-field">
                     <Form.Label column sm="2">Menu Image</Form.Label>
                     <Col sm="7">
                       <Form.File
@@ -162,5 +164,9 @@ const AddMenu = (menuProps) =>{
   )
 }
 
+AddMenu.propTypes = {
+    initialData : PropTypes.object,
+    loadMenuTable: PropTypes.func
+}
 
 export default AddMenu;

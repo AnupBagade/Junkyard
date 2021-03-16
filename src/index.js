@@ -4,8 +4,10 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
-import store from './Redux/store';
+import {store} from './Redux/store';
+import {loadMenuItems} from './Redux/ActionCreators/actionCreators';
 
+store.dispatch(loadMenuItems())
 
 ReactDOM.render(
   <Provider store={store}>

@@ -1,4 +1,5 @@
-import firebase from 'firebase';
+import firebase from 'firebase'
+import 'firebase/storage';
 
 /*Your web app's Firebase configuration
 For Firebase JS SDK v7.20.0 and later, measurementId is optional*/
@@ -13,10 +14,11 @@ let firebaseConfig = {
   measurementId: "G-BM3RV2KDFG"
 };
 // Initialize Firebase
-let firebaseObj = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
 // Create DB instance
-let firebaseDB = firebaseObj.database();
+let firebaseDB = firebase.database();
+
 
 // Create storage instance
 let firebaseStorage = firebase.storage().ref();
