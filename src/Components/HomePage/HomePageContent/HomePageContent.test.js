@@ -64,16 +64,15 @@ describe('HomePageContent with props', () => {
 })
 
 describe('HomePageContent without props', () =>{
+    let wrapper;
 
-  let wrapper;
-
-  beforeEach(() => {
+    beforeEach(() => {
     wrapper = shallow(<HomePageContent menuItems={[]} />)
-  })
+    })
 
-  it('Render CustomLoader',  () => {
-    expect(wrapper.find('CustomLoader').length).toBe(1);
-    expect(wrapper.find('Card').length).toBe(0);
-  })
+    it('Render CustomLoader',  () => {
+        expect(wrapper.find('CustomLoader').length).toBe(1);
+        expect(wrapper.find('Card').length).toBe(0);
+    })
 
 })
