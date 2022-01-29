@@ -1,0 +1,28 @@
+
+.generic{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    background-color: #212529;
+}
+
+.heading{
+    font-size: 15px;
+    font-family: 'Ubuntu';
+    color: #ED820E;
+}
+
+.column{
+    text-align: center;
+}
+
+.genericText{
+    font-size: 13px;
+    font-family: 'Ubuntu';
+    color: white;
+
+}
+
+.rowStyle{
+    padding-top: 5vw;
+}

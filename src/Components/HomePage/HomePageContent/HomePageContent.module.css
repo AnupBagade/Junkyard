@@ -1,0 +1,77 @@
+.homePageMenuContainer{
+    display: flex;
+    gap:20px;
+    flex-direction: row;
+    flex-wrap:wrap;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    margin:  0 auto;
+
+}
+
+.border{
+    height: 369px;
+    width: 290px;
+    background: transparent;
+    border-radius: 10px;
+    transition: border 1s;
+    position: relative;
+}
+
+.menuCard{
+    height: 275px;
+    width: 300px;
+    /* background: grey; */
+    /* border: 5px solid white; */
+    transition: background 0.8s;
+    overflow: hidden;
+    box-shadow: 0 70px 63px -60px #000000;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.menuCard:hover{
+    font-size: 14px;
+    box-shadow: 2px 2px 2px #212529;
+    transition: all 0.3s ease;
+    transform:scale(1.2);
+}
+
+.cardTitleStyle {
+    font-family: "Concert One";
+    font-size: 30px;
+    color: black;
+}
+
+@media (max-width:500px) {
+    .menuCard{
+        height: 175px;
+        width: 175px;
+        display: flex;
+        overflow: hidden;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+
+    .menuCard:hover{
+        font-size: 14px;
+        box-shadow: 2px 2px 2px #212529;
+        transform:scale(1.2);
+    }
+
+    .homePageMenuContainer{
+        display: flex;
+        position: relative;
+        overflow: auto;
+        flex-direction: column;
+        justify-content: space-around;
+        clear:both;
+
+
+    }
+}

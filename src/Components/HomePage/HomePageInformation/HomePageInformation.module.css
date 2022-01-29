@@ -1,0 +1,35 @@
+.informationContainer{
+    display: flex;
+    width:100vw;
+    position: relative;
+    margin-top: 5vw;
+    margin-bottom: 5vw;
+    flex-direction: row;
+    flex-wrap:wrap;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+}
+
+.imageStyle{
+    width: 100px;
+}
+
+.columnStyle{
+    text-align: center;
+}
+
+@media (max-width: 500px) {
+    .informationContainer{
+        display: flex;
+        position: relative;
+        margin-top: 5%;
+        margin-bottom: 5%;
+        padding-left: 2%;
+        padding-right: 2%;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        text-align: center;
+    }
+}

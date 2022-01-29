@@ -3,17 +3,16 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { Provider } from 'react-redux';
-import {store} from './Redux/store';
-import {loadMenuItems} from './Redux/ActionCreators/actionCreators';
+import {JunkyardContext} from './Context/JunkyardContext/JunkyardContext';
+// import { Provider } from 'react-redux';
+// import {store} from './Redux/store';
+// import {loadMenuItems} from './Redux/ActionCreators/actionCreators';
 
-store.dispatch(loadMenuItems())
-
+// store.dispatch(loadMenuItems())
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
+
+    <App />,
+    document.getElementById('root')
 );
 
 

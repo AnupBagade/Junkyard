@@ -1,0 +1,178 @@
+.carouselStyle{
+    height: 700px;
+}
+
+.imageOne {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-family: "Alfa Slab One";
+  transform: translate(-50%, -50%);
+}
+
+.imageTextOne {
+    position: relative;
+    color: #138808;
+    font-family: "Alfa Slab One";
+    font-size: 40px;
+}
+
+.imageTwo {
+  position: absolute;
+  top: 20%;
+  right: 15%;
+  font-size: 30px;
+  font-family: "Concert One";
+  transform: translate(20%, 30%);
+}
+
+.imageTextTwo {
+  color: #138808;
+  font-size: 50px;
+  font-family: "Concert One";
+}
+
+.imageThree {
+  position: absolute;
+  top: 40%;
+  left: 25%;
+  font-family: "Alfa Slab One";
+  transform: translate(-50%, -50%);
+}
+
+.imageTextThree {
+  color: #ED820E;
+  font-size: 40px;
+}
+
+.imageFour {
+  position: absolute;
+  top: 10vw;
+  left: 20vw;
+  font-family: "Alfa Slab One";
+  transform: translate(80%, 50%);
+}
+
+.imageTextFour{
+    color: #138808;
+    font-size: 50px;
+}
+
+.imageFive {
+  position: absolute;
+  top: 30%;
+  left: 25%;
+  font-family: "Alfa Slab One";
+  transform: translate(-40%, -70%);
+}
+
+.imageTextFive {
+  color: #ffff66;
+  font-size: 50px;
+}
+
+
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 45%;
+  font-family: "Alfa Slab One";
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width:500px) {
+    .imageFour {
+      position: absolute;
+      top: 30vw;
+      left: 25vw;
+      right: 10vw;
+      font-size: 10vw;
+      font-family: "Alfa Slab One";
+      transform: translate(50%, 40%);
+    }
+
+    .imageTextFour{
+        color: #138808;
+        font-size: 12vw;
+    }
+
+    .carouselStyle{
+        height: 300px;
+        padding-bottom: 20px;
+    }
+
+    .imageOne {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      font-size: 15px;
+      font-family: "Alfa Slab One";
+      transform: translate(-50%, -50%);
+    }
+
+    .imageTextOne {
+        position: relative;
+        color: #138808;
+        font-family: "Alfa Slab One";
+        font-size: 15px;
+    }
+
+    .imageTwo {
+        top: 25%;
+        padding-right: 15%;
+        font-size: 12px;
+        position: absolute;
+        font-family: "Concert One";
+        transform: translate(45%, 60%);
+    }
+
+    .imageTextTwo {
+      color: #138808;
+      font-size: 15px;
+      font-family: "Concert One";
+    }
+
+    .imageThree {
+      position: absolute;
+      top: 40%;
+      left: 25%;
+      font-size: 12px;
+      font-family: "Alfa Slab One";
+      transform: translate(-20%, -50%);
+    }
+
+    .imageTextThree {
+      color: #ED820E;
+      font-size: 15px;
+    }
+
+    .imageFour {
+      position: absolute;
+      top: 30%;
+      left: 20%;
+      padding-right: 10%;
+      font-size: 12px;
+      font-family: "Alfa Slab One";
+      transform: translate(40%, 50%);
+    }
+
+    .imageTextFour{
+        color: #138808;
+        font-size: 13px;
+    }
+
+    .imageFive {
+      position: absolute;
+      top: 15%;
+      left: 25%;
+      font-size: 12px;
+      font-family: "Alfa Slab One";
+      transform: translate(-10%, 80%);
+    }
+
+    .imageTextFive {
+      color: #ffff66;
+      font-size: 13px;
+    }
+}

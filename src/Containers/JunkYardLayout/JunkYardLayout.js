@@ -1,28 +1,43 @@
-import { Route, Switch } from 'react-router-dom';
-import HomePage from '../Homepage/Homepage';
-import JunkItems from '../../Components/JunkItems/JunkItems';
-import Admin from '../../Components/Admin/Admin';
-import JunkYardHeader from '../../Components/Header/Header';
+import {  Route, Switch, useHistory } from 'react-router-dom';
+import CoreProviderContext from '../../Context/CoreProviderContext/CoreProviderContext';
+import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
+import LoginAndRegister from '../../Components/LoginAndRegister/LoginAndRegister';
 import Auxiliary from '../../Auxiliary/Auxiliary';
+import JunkYardHeader from '../../Components/Header/Header';
+import StackOverflow from '../../StackOverflow/Stackoverflow';
+import JunkyardProtectedRouter from '../JunkyardProtectedRouter/JunkyardRouter';
+import {ToastProvider} from 'react-toast-notifications';
+import getUserRole from '../../Context/ContextManagement/GenericFunctions/GetUserRole';
 
+class JunkYardLayout extends Component {
 
-const JunkYardLayout = (props) => {
-  return(
-    <Auxiliary>
-      <JunkYardHeader />
-      <Switch>
-        <Route exact path="/">
-          <HomePage name="Home"/>
-        </Route>
-        <Route exact path="/burger">
-          <JunkItems itemType = "Burger"/>
-        </Route>
-        <Route exact path="/admin">
-          <Admin />
-        </Route>
-      </Switch>
-    </Auxiliary>
-  )
+    async componentDidMount(){
+        let userRoles = await getUserRole();
+        await this.context.updateUserData({...userRoles.roles})
+    }
+
+    render(){
+        return(
+            <ToastProvider>
+                <JunkYardHeader />
+                <Switch>
+                    <Route exact path='/login'>
+                        <LoginAndRegister formType='login'/>
+                    </Route>
+                    <Route exact path='/register'>
+                        <LoginAndRegister formType='register'/>
+                    </Route>
+                    <Route exact path='/StackOverflow'><StackOverflow /></Route>
+                    <JunkyardProtectedRouter />
+                </Switch>
+            </ToastProvider>
+        )
+    }
+
 }
+
+// Attaching CoreProviderContext to contextType.
+JunkYardLayout.contextType = CoreProviderContext;
 
 export default JunkYardLayout

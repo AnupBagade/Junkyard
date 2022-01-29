@@ -10,7 +10,7 @@ const rootReducer = (state=initialState, action) => {
 
     case 'LOAD_MENUITEMS':
       let menuItems = Object.entries(action.payload).reduce((result, value) => {
-        result.push({...(lodash.pick(value[1], ['menuName', 'menuNameKey', 'imageURI']))})
+        result.push({...(lodash.pick(value[1], ['menuName', 'menuNameKey', 'imageURI', 'menuDisplayName']))})
         return result
       }, [])
       return{...state, ['menuItems']: menuItems}
@@ -19,7 +19,7 @@ const rootReducer = (state=initialState, action) => {
       console.log(action.payload)
       return state
 
-      case 'DEMO2':
+    case 'DEMO2':
         console.log(action.payload)
         return state
 

@@ -1,166 +1,127 @@
 import React, {useState} from 'react';
+import axios from 'axios';
 import {Formik} from 'formik';
 import PropTypes from 'prop-types';
-import firebaseDB, {firebaseStorage} from '../../../../Utils/FirebaseConfiguration/FirebaseConfiguraiton';
-import {Form, Row, Col, Container, Button, Card} from 'react-bootstrap';
+import {Form, Row, Col, Container, Button, Card, Image} from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as Yup from 'yup';
-import useCustomConfirm from '../../../CustomConfirm/CustomConfirm';
 import CustomLoader from '../../../CustomLoader/CustomLoader';
 
+// menuName:Yup.string().required('Please provide the menu name.').test(
+// 'duplicate-menu',
+// 'Menu Name already exists. Please confirm Yes on overriding existing menu details.',
+// async (value, context) =>{
+//   let temp = await validateMenuName('menuNameKey', value)
+//   if(temp && !overrideMenu){
+//     showConfirmWindow()
+//   }
+//   return true
+// }),
 
-const validateMenuName = async (uniqueKeyColumn, menuName='',requestType='Menu') => {
-  let menuItems = await firebaseDB.ref('Menu').orderByChild('menuNameKey')
-  .equalTo(menuName.trim().replace(/\s/g, '').toUpperCase()).once('value')
-  return menuItems.val()
-}
+let axiosRequestController = null;
 
 const AddMenu = (menuProps) =>{
+    const [formSubmitting, setformSubmitting] = useState(false);
 
-  const [overrideMenu, setOverrideMenu] = useState(false);
-
-  const [loading, setLoading] = useState(false);
-
-  const duplicateKey='menuNameKey'
-
-  const handleConfirmYes = () => {setOverrideMenu(true)}
-
-  const handleConfirmNo = () => {setOverrideMenu(false)}
-
-  const [showConfirmWindow] = useCustomConfirm(handleConfirmYes, handleConfirmNo);
-
-  const validationSchema = Yup.object({
-      requestType: Yup.string().matches("Menu").required('Please enter type of request.'),
-      menuName:Yup.string().required('Please provide the menu name.').test(
-        'duplicate-menu',
-        'Menu Name already exists. Please confirm Yes on overriding existing menu details.',
-        async (value, context) =>{
-          let temp = await validateMenuName('menuNameKey', value)
-          if(temp && !overrideMenu){
-            showConfirmWindow()
-          }
-          return true
-        }),
-      imageURI: Yup.string().required('Please select image to be uploaded.')
-  })
+    const validationSchema = Yup.object({
+        menuName:Yup.string().required('Please provide the menu name.'),
+        menuImage: Yup.string().required('Please select image to be uploaded.')
+    })
 
 
-  return(
-    <Container style={{paddingTop:"10%", paddingBottom:"10%"}}>
-      <Card>
-        <Card.Header as="h5" style={{backgroundColor:"#212529", color:"white"}} data-test="add-menu-form-header">Add Menu</Card.Header>
-        <Card.Body>
-          <Formik
-            enableReinitialize
-            htmlFor="menuForm"
-            initialValues={menuProps.initialData}
-            validationSchema={validationSchema}
-            onSubmit={async (values, actions) => {
+    return(
+        <Container style={{paddingTop:"5%", paddingBottom:"5%"}}>
+            <Card>
+                <Card.Header as="h5" style={{backgroundColor:"#212529", color:"white"}} data-test="add-menu-form-header">Add Menu</Card.Header>
+                <Card.Body>
+                    <Formik
+                        enableReinitialize
+                        htmlFor="menuForm"
+                        initialValues={menuProps.initialData}
+                        validationSchema={validationSchema}
+                        onSubmit={async (values, actions) => {
+                            // verify are there any duplicate requests.
+                            if(axiosRequestController){
+                                axiosRequestController.cancel();
+                            }
+                            // updating form submission progress status
+                            setformSubmitting(true)
 
-              // Setting loading state to display loader.
-              setLoading(prevState => true)
+                            let formData = new FormData()
+                            formData.append('menu_name', values.menuName)
+                            formData.append('menu_name_key', values.menuName.trim().replace(/\s/g, '').toUpperCase())
+                            if(typeof values.menuImage === "object"){
+                                formData.append('menu_image', values.menuImage, values.type)
+                            }
+                            axiosRequestController = axios.CancelToken.source();
+                            if(menuProps.initialData.menuId == 0){
+                                await menuProps.addMenuHandler(formData, axiosRequestController);
+                            }else{
+                                await menuProps.updateMenuHandler(menuProps.initialData.menuId, formData, axiosRequestController)
+                            }
 
-              // Creating or updating menu image and menu details to firebase.
-              firebaseDB.ref(values.requestType).orderByChild(duplicateKey)
-              .equalTo(values.menuName.trim().replace(/\s/g, '').toUpperCase())
-              .once('value', (snapshot) =>{
-                console.log('Submitting')
-                const uploadTask = firebaseStorage.child(`Images/Menu/${values.menuName.trim().replace(/\s/g, '').toUpperCase()}`).put(values.imageURI);
-                uploadTask.on(
-                  'state_changed',
-                  null,
-                  (error) => {
-                    console.log(error)
-                  },
-                  () =>{
-                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                      let firebaseObj=''
-                      if(snapshot.exists()){
-                        // Update menu image and menu details
-                        firebaseObj = firebaseDB.ref(values.requestType+'/'+Object.keys(snapshot.val())[0])
-                        firebaseObj.set({
-                          'menuName':values.menuName,
-                          'variants': 10,
-                          'imageURI': downloadURL,
-                          'menuNameKey':values.menuName.trim().replace(/\s/g, '').toUpperCase()},
-                          (error) => {
-                            error ? console.log('updating failed.') : console.log('Data updated successfully.')}
-                        )}
-                      else{
-                        // Create a new menu image and menu details in firebase.
-                        firebaseObj = firebaseDB.ref(values.requestType)
-                        firebaseObj.push({
-                          'menuName':values.menuName,
-                          'variants': 10,
-                          'imageURI': downloadURL,
-                          'menuNameKey':values.menuName.trim().replace(/\s/g, '').toUpperCase()})
-                      }
+                            // Resetting form for next cycle.
+                            actions.setSubmitting(false);
+                            // If we pass defaultData as argument, form won't be reset.
+                            actions.resetForm({
+                                values:menuProps.defaultData
+                            });
+                            if(document.getElementById("imagePreviewOne")){
+                                document.getElementById("imagePreviewOne").src="#"
+                            }
+                            if(document.getElementById("imagePreviewTwo")){
+                                document.getElementById("imagePreviewTwo").value=""
+                            }
+                            if(document.getElementById("menuImage")){
+                                document.getElementById("menuImage").value=""
+                            }
+                            // Removing custom CustomLoader
+                            setformSubmitting(false)
+                        }}
+                    >
+                        {(props) =>(
+                            <Form id="menuForm" onSubmit={props.handleSubmit} data-test="add-menu-form">
+                                <Form.Group as={Row} data-test="add-menu-menuName-field">
+                                    <Form.Label column sm="2">Menu Name</Form.Label>
+                                    <Col sm="7">
+                                        <Form.Control
+                                            id="menuName"
+                                            name="menuName"
+                                            type="text"
+                                            value={props.values.menuName}
+                                            onChange={props.handleChange}
+                                            onBlur={props.handleBlur}/>
+                                        {props.errors.menuName && props.touched.menuName ? (<div>{props.errors.menuName}</div>) : null}
+                                    </Col>
+                                </Form.Group>
+                                <Form.Group as={Row} data-test="add-menu-menuImage-field">
+                                    <Form.Label column sm="2">Menu Image</Form.Label>
+                                    <Col sm="7">
+                                        <Form.File
+                                            id="menuImage"
+                                            type="file"
+                                            accept="image/*"
+                                            name="menuImage"
+                                            onChange={(event) =>{props.setFieldValue("menuImage", event.target.files[0])}}/>
+                                      {props.errors.menuImage && props.touched.menuImage ? (<div>{props.errors.menuImage}</div>) : null}
+                                    </Col>
+                                </Form.Group>
+                                <Form.Row>
+                                    <Form.Group as={Col}>
+                                        {
+                                            typeof props.values.menuImage == "object" ? (<Image id="imagePreviewOne" thumbnail src={URL.createObjectURL(props.values.menuImage)} style={{width:"400px", height:"300px"}}/>)
+                                            : props.values.menuImagePreview ? (<Image id="imagePreviewTwo" thumbnail src={menuProps.initialData.menuImagePreview} style={{width:"400px", height:"300px"}}/>) : null
+                                        }
 
-                      // resetting formik form
-                      actions.setSubmitting(false);
-                      actions.resetForm(menuProps.initialData)
-                      document.getElementById("imageURI").value="";
-
-                      // resetting overridemenu and loader state for new form.
-                      setOverrideMenu(false);
-                      setLoading(prevState => false)
-
-                      // Update menuitems table.
-                      menuProps.loadMenuTable(prevState => !prevState)
-                    })
-                  })
-            })}}
-          >
-            {(props) =>(
-                <Form id="menuForm" onSubmit={props.handleSubmit} data-test="add-menu-form">
-                  <Form.Group as={Row} data-test="add-menu-requestType-field">
-                    <Form.Label column sm="2">Request Type</Form.Label>
-                    <Col sm="7">
-                      <Form.Control
-                        data-test="request-type"
-                        id="requestType"
-                        name="requestType"
-                        type="text"
-                        value={props.values.requestType}
-                        onChange={props.handleChange}
-                        onBlur={props.handleBlur}/>
-                      {props.errors.requestType && props.touched.requestType ? (<div>{props.errors.requestType}</div>) : null}
-                    </Col>
-                  </Form.Group>
-                  <Form.Group as={Row} data-test="add-menu-menuName-field">
-                    <Form.Label column sm="2">Menu Name</Form.Label>
-                    <Col sm="7">
-                      <Form.Control
-                        id="menuName"
-                        name="menuName"
-                        type="text"
-                        value={props.values.menuName}
-                        onChange={props.handleChange}
-                        onBlur={props.handleBlur}/>
-                      {props.errors.menuName && props.touched.menuName ? (<div>{props.errors.menuName}</div>) : null}
-                    </Col>
-                  </Form.Group>
-                  <Form.Group as={Row} data-test="add-menu-menuImage-field">
-                    <Form.Label column sm="2">Menu Image</Form.Label>
-                    <Col sm="7">
-                      <Form.File
-                        id="imageURI"
-                        name="imageURI"
-                        onChange={props.handleChange}
-                        onBlur={(event) =>{props.setFieldValue("imageURI", event.target.files[0])}}/>
-                      {props.errors.imageURI && props.touched.imageURI ? (<div>{props.errors.imageURI}</div>) : null}
-                    </Col>
-                  </Form.Group>
-                  <Button type="submit" variant="success" size="lg" style={{float:"right"}}>Submit</Button>
-                </Form>
-              )}
-          </Formik>
-          <Row style={{display: 'flex', justifyContent: 'center'}}>
-            {loading && (<CustomLoader />)}
-          </Row>
-        </Card.Body>
-      </Card>
-    </Container>
+                                    </ Form.Group>
+                                </Form.Row>
+                                <Button type="submit" variant="success" size="lg" style={{float:"right"}}>Submit</Button>
+                            </Form>
+                          )}
+                    </Formik>
+                </Card.Body>
+            </Card>
+        </Container>
   )
 }
 
