@@ -66,14 +66,15 @@ const useLoadPixelItems = (menufieldsRequired, sessionStorageKey, queryParameter
 
   /* useEffect to call API methods */
   useEffect(() => {
-    if(menuItems.length < 20){
+    if(menuItems.length < 40){
       getpixelItems();
     }
     itemsvalueRef.current = menuItems;
     return function cleanup(){
-      sessionStorage.removeItem(sessionStorageKey);
-      sessionStorage.setItem('burgerItems', JSON.stringify(itemsvalueRef.current));
-      sessionStorage.setItem('pages', JSON.stringify(Math.ceil(itemsvalueRef.current.length / 20)))
+        console.log('inside cleanup function');
+        sessionStorage.removeItem(sessionStorageKey);
+        sessionStorage.setItem('burgerItems', JSON.stringify(itemsvalueRef.current));
+        sessionStorage.setItem('pages', JSON.stringify(Math.ceil(itemsvalueRef.current.length / 20)))
     }
   }, [pagesCount])
 

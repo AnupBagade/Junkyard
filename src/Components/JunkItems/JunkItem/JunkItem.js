@@ -1,37 +1,42 @@
-// import { Card, Avatar, Select, Col, Row, Popover, Button, InputNumber, Typography } from 'antd';
-import { Card, Popover, Button, InputNumber, Typography } from 'antd';
+import {Card, Row, Col, Dropdown, Form, Button} from 'react-bootstrap';
+import PropTypes from 'prop-types';
+import JunkItemsStyles from './JunkItem.module.css';
+import { useContext, useState } from 'react';
+import CartDataContext from '../../../Context/CartDataContext/CartDataContext';
 
 
 const JunkItem = (props) => {
-  const { Meta } = Card;
-  const { Title } = Typography;
-  const itemQuantity = (
-    <InputNumber min={0} max={10} defaultValue={0}></InputNumber>
-  )
-  const itemInfo = (
-    <Popover content='Food Information' title={props.title} trigger="click">
-      <Button>Details</Button>
-    </Popover>
-  )
-  const addItem = (
-    <Button>Add</Button>
-  )
 
-  return(
-    <Card
-      className='junkItem'
-      hoverable
-      cover={<img alt="example" src={props.image} style={{height:'250px'}}/>}
-      actions={[
-        itemInfo,
-        itemQuantity,
-        addItem
-      ]}>
-      <Meta
-        title={<Title level={3} style={{color:"#000000"}}>{props.name}</Title>}
-        style={{textAlign: 'center'}} />
-    </Card>
-  );
+    const [quantity, setQuantity] = useState(0);
+
+    return(
+        <Card className={JunkItemsStyles.junkItem}>
+            <Card.Img src={props.image} className={JunkItemsStyles.junkItemImage}/>
+            <Card.Body style={{width:"100%"}}>
+                <span ><Card.Title>{props.title}</Card.Title></span>
+                <Card.Text className={JunkItemsStyles.junkItemDescription}>
+                    {props.description}
+                </Card.Text>
+                <h6>Price: {props.price}</h6>
+                <hr className="solid" />
+                <span className={JunkItemsStyles.inputType}><input  type="number" min="1" max="10" onChange={(e)=>{setQuantity(e.target.value)}} value={quantity}/></span>
+
+                <span className={JunkItemsStyles.buttonType}>
+                    {quantity ?
+                        <Button onClick={() => props.addToCart(props.name, quantity, props.price)} variant="success" >Add</Button>
+                        : <Button variant="success" disabled>Add</Button>
+                    }
+                </span>
+            </Card.Body>
+        </Card>
+    );
 };
+
+JunkItem.propTypes = {
+    title: PropTypes.string,
+    name: PropTypes.string,
+    image:PropTypes.string,
+    price:PropTypes.number
+}
 
 export default JunkItem;
